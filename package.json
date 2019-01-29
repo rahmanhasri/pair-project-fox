@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/rahmanhasri/pair-project-fox#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "nodemon": "^1.18.9",
