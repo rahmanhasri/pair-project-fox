@@ -6,7 +6,7 @@ app.set('view engine', 'ejs')
 app.use(express.urlencoded( { extended : false }))
 
 app.get('/', function(req, res) {
-  res.send('good luck')
+  res.render('home')
 })
 
 app.listen(port, function() {
