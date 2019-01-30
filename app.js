@@ -9,6 +9,7 @@ app.get('/', function(req, res) {
   res.render('home')
 })
 
+
 app.listen(port, function() {
   console.log(`listening to port ${port}`)
 })
