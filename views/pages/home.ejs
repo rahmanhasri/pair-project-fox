@@ -1,1 +1,24 @@
-Good luck
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <%- include('../partials/head') %>
+    <%- include('../partials/search-autocomplete') %>
+    <%include ../partials/alerts%>
+</head>
+
+<%- include('../partials/navbar')%>
+<% if (msg) {%>
+  <div class="info-msg">
+      <i class="fa fa-times-circle"></i>
+      <%= msg%>
+  </div>
+<%}%>
+<% if (user) {%>
+    <h1>User Home</h1>
+<%} else {%>
+    <h1>Home</h1>
+<%}%>
+
+</html>

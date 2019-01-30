@@ -1,6 +1,6 @@
 <nav class="navbar is-light">
     <div class="navbar-brand">
-      <a class="navbar-item" href="">
+      <a class="navbar-item" href="/">
         <img src="/chanlogo1.png" alt="" width="70" height="28">
       </a>
   
@@ -17,19 +17,17 @@
           
       <div class="navbar-end">
         <div class="navbar-item">
-          <form action="/" method="">
-            <input class="input is-rounded" type="text" placeholder="Search" name="search">
+          <div class="autocomplete">
+          <form autocomplete="off" action="/" method="POST">
+            <input class="input is-rounded" id="myInput" type="text" name="username" placeholder="Search Username">
+            <input type='submit'>
           </form>
-        </div>
-        <div class="navbar-item">
-          <p class="control" style="font-size: 16px !important;">
-              <input class="input" type="text" placeholder="Find a post" style="font-size: 16px !important;">
-            </p>
-            <p class="control" style="font-size: 16px !important; line-height: 24px !important;">
-              <button class="button" style="font-size: 16px !important; line-height: 24px !important;">
-                Search
-              </button>
-            </p>
+          </div>
         </div>
       </div>
   </nav>
+
+  <%- include('../partials/autocomplete', {users: users}) %>
+
+
+
