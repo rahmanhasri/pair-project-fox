@@ -3,7 +3,8 @@
 <head>
   <% include ../partials/head %>
   <% include ../partials/alerts%>
-  <title>Login</title>
+  <%- include('../partials/search-autocomplete') %>
+  <title>Signup</title>
 </head>
 <body>
   
@@ -16,7 +17,7 @@
   <%}%>
   <div class="container is-fluid">
     
-    <form action="/user/register" method="POST">
+    <form action="/signup" method="POST">
       <div class="row">
   
         <div class="columns is-mobile">

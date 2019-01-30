@@ -1,22 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
+
+<html>
+
 <head>
-  <% include ../partials/head %>
-  <title>Home</title>
+    <title></title>
+    <%- include('../partials/head') %>
+    <%- include('../partials/search-autocomplete') %>
+    <%include ../partials/alerts%>
 </head>
-<body>
+
+<% if (user) {%>
+    <%- include('../partials/navbar-user')%>
+    <%- include('../partials/main-timeline')%>
+<%} else {%>
+    <%- include('../partials/navbar')%>
+        <% if (msg) {%>
+        <div class="info-msg">
+            <i class="fa fa-times-circle"></i>
+            <%= msg%>
+        </div>
+        <%}%>
+    <div class="container is-fluid">
+    
+    <form action="/" method="POST">
+      <div class="row">
   
-  <!-- Good luck -->
-  <!-- form buat post twit -->
+        <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="username">Username</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="text" placeholder="Username" name="username">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
 
-  <div class="container">
-    <div class="columns">
-    </div>
-    <div class="columns">
-
-    </div>
-    <% include ../partials/posting %>
+      <div class="row">
+  
+        <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="password">Password</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="password" placeholder="Password" name="password">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
+      </div>
+      <br>
+      <button type="submit" class="button is-primary">Submit</button>
+    </form>
 
   </div>
-</body>
+<%}%>
+
 </html>
