@@ -4,9 +4,61 @@ const bcrypting = require('../helpers/bcryprting')
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: DataTypes.STRING,
-    email: DataTypes.STRING,
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: {
+          msg: 'Wrong email format'
+        },
+        isUnique: function (value) {
+            let self = this
+            return new Promise((resolve, reject) => {
+              User
+                .findOne({where: {email: value}})
+                .then(dataUser => {
+                  if (dataUser && dataUser.id != self.id) {
+                    reject('Email has been used')
+                  }
+                  resolve()
+                })
+                .catch(err => {
+                  reject(err)
+                })
+            })
+        }
+      }
+    },
+    username: {
+      type: DataTypes.STRING,
+      validate: {
+        isUnique: function (value) {
+          let self = this
+          return new Promise((resolve, reject) => {
+            User
+              .findOne({where: {username: value}})
+              .then(dataUser => {
+                if (dataUser && dataUser.id != self.id) {
+                  reject('Username has been used')
+                }
+                resolve()
+              })
+              .catch(err => {
+                reject(err)
+              })
+          })
+        }
+      }
+      
+    },
+    password: {
+      type: DataTypes.STRING,
+      validate: {
+        len: {
+          args: [6,10],
+          msg: 'Password should contain at least 6 characters'
+        }
+      }
+    },
     friendsCount: DataTypes.INTEGER
   }, {
     hooks: {
