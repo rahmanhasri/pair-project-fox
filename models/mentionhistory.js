@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   MentionHistory.associate = function(models) {
     // associations can be defined here
+    MentionHistory.belongsTo(models.Post, {foreignKey: 'postId'})
   };
   return MentionHistory;
 };

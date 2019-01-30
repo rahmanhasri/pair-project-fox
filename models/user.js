@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         len: {
-          args: [6,10],
+          args: [6],
           msg: 'Password should contain at least 6 characters'
         }
       }
@@ -78,6 +78,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   User.associate = function(models) {
     // associations can be defined here
+    User.belongsToMany(User, {as: 'friends', through: 'Friends', foreignKey: 'user'})
+    User.hasMany(models.Post, {foreignKey: 'UserId'})
   };
   return User;
 };
