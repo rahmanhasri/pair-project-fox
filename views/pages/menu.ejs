@@ -2,8 +2,65 @@
 <head>
   <% include ../partials/head %>
   <title>User Menu</title>
+  <% include ../partials/main-timeline%>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <% include ../partials/profile-style%>
 </head>
 <body>
+
+<% include ../partials/navbar-user%>
+
+
+<div class="container db-social">
+<div class="jumbotron jumbotron-fluid"></div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-11">
+            <div class="widget head-profile has-shadow">
+                <div class="widget-body pb-0">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-xl-4 col-md-4 d-flex justify-content-lg-start justify-content-md-start justify-content-center">
+                            <ul>
+                                <li>
+                                    <div class="counter"><%= theUser.friendsCount%></div>
+                                    <div class="heading" ><a href ='/menu/<%= theUser.id%>/friendList'>Friends</a></div>
+                                </li>
+  
+                            </ul>
+                        </div>
+                        <div class="col-xl-4 col-md-4 d-flex justify-content-center">
+                            <div class="image-default">
+                                <img class="rounded-circle" src="http://bootdey.com/img/Content/avatar/avatar5.png" alt="...">
+                            </div>
+                            <div class="infos">
+                                <h2><%= userData.name%></h2>
+                                <h4>@<%= userData.username%></h4>
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-4 d-flex justify-content-lg-end justify-content-md-end justify-content-center">
+                                    <div class="dropdown">
+                                        <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle">
+                                            <i class="la la-ellipsis-h"></i>
+                                        </button>
+                                        <div class="dropdown-menu" x-placement="bottom-start" style="display: none; position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 35px, 0px);">
+                                            <a href="#" class="dropdown-item">
+                                            Report
+                                            </a>
+                                            <a href="#" class="dropdown-item">
+                                            Block
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 
   <!-- <div class="container">
       <div class="columns is-multiline is-mobile">
@@ -17,7 +74,49 @@
       </div>
   </div> -->
 
-  <% include ../partials/posting %>
+
+<div class="container bootstrap snippets">
+    <div class="col-md-7 col-md-offset-2">
+        <div class="panel">
+            <div class="panel-body">
+            <% include ../partials/posting %>
+        		<div class="mar-top clearfix">
+        			<button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Share</button>
+        			<a class="btn btn-trans btn-icon fa fa-video-camera add-tooltip" href="#" data-original-title="Add Video" data-toggle="tooltip"></a>
+        			<a class="btn btn-trans btn-icon fa fa-camera add-tooltip" href="#" data-original-title="Add Photo" data-toggle="tooltip"></a>
+        			<a class="btn btn-trans btn-icon fa fa-file add-tooltip" href="#" data-original-title="Add File" data-toggle="tooltip"></a>
+        		</div>
+        	</div>
+        </div>
+        <div class="panel panel-body">
+    		<!-- Timeline -->
+    		<!--===================================================-->
+    
+    			<!-- Timeline header -->
+          <% timeline.forEach(post => {%>
+          <div class="timeline">
+            <div class="timeline-entry">
+            <div class="timeline-stat">
+              <div class="timeline-icon"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile picture">
+              </div>
+            </div>
+            <div class="timeline-label">
+              <p class="mar-no pad-btm"><a href="" class="btn-link text-semibold"><%= post.User.name%></a> <%= post.content%></p>
+              <% if (post.urlPhoto) {%>
+                <div class="img-holder">
+                  <img src="/uploads/<%= post.urlPhoto%>" alt="Image">
+                </div>
+              <%}%>
+            </div>
+            </div>
+            </div>
+          <%})%>
+    			
+    		<!--===================================================-->
+    		<!-- End Timeline -->
+    	</div>
+    </div>
+</div>
     
 </body>
 </html>
