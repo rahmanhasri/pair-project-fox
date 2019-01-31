@@ -1,22 +1,15 @@
 <!-- <div class="container"> -->
 
-<div class="columns is-multiline is-mobile">
+<div class="flex-row">
   <div class="column is-one-quarter">
       <form action="/menu" method="POST" enctype="multipart/form-data">
-      <textarea class="textarea is-primary" name="text" placeholder="Write something about you"></textarea>
-      <div class="file">
-          <label class="file-label">
-          <input class="file-input" type="file" name="photo" />
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
-              </span>
-              <span class="file-label">
-                Input ur photo...
-              </span>
-            </span>
+      <textarea class="form-control" name="text" placeholder="Write something about you"></textarea>
+      <div class="image-upload">
+          <label for="file-input">
+              <a class="btn btn-trans btn-icon fa fa-camera add-tooltip" href="#" data-original-title="Add Photo" data-toggle="tooltip"></a>
           </label>
-        </div>
+          <input style="display: none"id="file-input" type="file"/>
+      </div>
       <button type="submit" class="button is-primary">Submit</button>
     </form>
 </div>
