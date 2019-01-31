@@ -1,0 +1,92 @@
+
+<html>
+
+<head>
+    <title></title>
+    <%- include('../partials/head') %>
+    <%- include('../partials/search-autocomplete') %>
+    <%include ../partials/alerts%>
+</head>
+
+<% if (user) {%>
+    <%- include('../partials/navbar-user')%>
+    <%- include('../partials/main-timeline')%>
+    <h1>menu</h1>
+<%} else {%>
+    <%- include('../partials/navbar')%>
+  <div class="container is-fluid">
+    
+    <form action="/user/signup" method="POST">
+      <div class="row">
+  
+        <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="name">Name</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="text" placeholder="Name" name="name">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
+
+      <div class="row">
+  
+        <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="email">Email</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="email" placeholder="Email" name="email">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <br>
+      <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="username">Username</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="username" placeholder="Username" name="username">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <br>
+      <div class="columns is-mobile">
+            <div class="column is-4">
+              <div class="field">
+                <label for="password">Password</label>
+                  <p class="control has-icons-left">
+                    <input class="input" type="password" placeholder="Password" name="password">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-lock"></i>
+                    </span>
+                  </p>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <br>
+      <button type="submit" class="button is-primary">Submit</button>
+    </form>
+
+  </div>
+<%}%>
+
+</html>
