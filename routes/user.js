@@ -9,7 +9,6 @@ router.get('/signup', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
-
   // console.log(req.body)
   Models.User.create(req.body)
     .then((newUser) => {
@@ -44,7 +43,7 @@ router.post('/login', (req, res) => {
         res.redirect('/menu/timeline/1')
       } else {
         // error login gagal
-        res.redirect('/login')
+        res.redirect('/user/login')
       }
     })
     .catch( err => {
