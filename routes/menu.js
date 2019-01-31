@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
     cb(null, './public/uploads')
   },
   filename: function (req, file, cb) {
-    console.log(file)
+    // console.log(file)
     cb(null, Date.now() + '-' + file.fieldname + '.' + file.mimetype.split('/')[1] )
   }
 })
@@ -49,11 +49,10 @@ router.post('/', upload, function(req, res) {
   let obj = {
     content: req.body.text,
     likeCount: 0,
-    UserId: 8, // ambil dari req.session
+    UserId: req.session.userLogin.id, // ambil dari req.session
     urlPhoto : req.file ? req.file.filename : null
   }
   // res.send(req.file)
-  // console.log(req.file)
 
   // res.send(obj)
   // res.send(req.body)
@@ -185,27 +184,49 @@ updatedAt: "2019-01-30T05:02:18.475Z"
 }
 */
 
-router.get('/profile', function(req, res) {
-
-  Models.User.findByPk(1, { // req.session.id
-    include : [ Models.Post ]
-  })
-    .then( user => {
-      res.send(user)
+router.get('/:username', (req, res) => {
+  let userData = null
+  Models.User
+    .findOne({
+      where : { username : req.params.username }, include : [ Models.Post ]
     })
-    .catch( err => {
-      res.send(err)
-    })
-})
-
-
-router.get('/profile/:username', function(req, res) {
-
-  Models.User.findOne({
-    where : { username : req.params.username }, include : [ Models.Post ]
-  })
     .then( user => {
-      res.send(user)
+      if(!user) {
+        res.redirect('/menu/timeline/1')
+      } else {
+
+        return Models.User.findByPk(req.session.userLogin.id, { include :  [ { model : Models.FriendRequest }]})
+      }
+      // res.send('butuh status')
+      // res.render('pages/profile', {userData: userData, users: allUser})
+    })
+    .then((dataFound) => {
+      // console.log('here')
+      // console.log(dataFound)
+      // res.send(dataFound)
+      dataFound.FriendRequests.forEach( fr => {
+        if(fr.requestTo == userData.id) {
+          if(fr.response === 'true') {
+            status = 'true'
+          } else {
+            status = 'pending'
+          }
+        } 
+      })
+
+      return Models.User.findAll()
+    })
+    .then(allUser => {
+      let users = []
+      allUser.forEach(user => {
+        users.push(user.username)
+      })
+
+      if(userData.id === req.session.userLogin.id) {
+        res.redirect('/menu/timeline/1')
+      } else {
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status })
+      }
     })
     .catch( err => {
       res.send(err)
@@ -243,6 +264,18 @@ router.get('/:id/friendList', (req, res) => {
     })
 })
 
+// router.get('/:id/friendReq', (req, res) => {
+//   Models.FriendRequest
+//     .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
+//     .then(request => {
+//       // res.send(request)
+//       res.render('pages/friend-request', {request: request})
+//     })
+//     .catch(err => {
+//       res.send(err)
+//     })
+// })
+
 router.post('/search', (req, res) => {
   let userData = null
   let status = null
@@ -256,7 +289,7 @@ router.post('/search', (req, res) => {
       } else {
         userData = user
         // return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.id}})
-        return Models.User.findByPk(1, { include :  [ { model : Models.FriendRequest }]})
+        return Models.User.findByPk(req.session.userLogin.id, { include :  [ { model : Models.FriendRequest }]})
       }
     })
     .then((dataFound) => {
@@ -281,13 +314,14 @@ router.post('/search', (req, res) => {
         users.push(user.username)
       })
 
-      if(userData.id === 1) {
+      if(userData.id === req.session.userLogin.id) {
         res.redirect('/menu/timeline/1')
       } else {
-        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status, })
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status })
       }
     })
     .catch(err => {
+      console.log(err)
       res.send(err)
     })
 })

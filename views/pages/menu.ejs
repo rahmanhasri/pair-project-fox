@@ -23,12 +23,12 @@
                         <div class="col-xl-4 col-md-4 d-flex justify-content-lg-start justify-content-md-start justify-content-center">
                             <ul>
                                 <li>
-                                    <div class="counter"><%= userData.friendsCount%></div>
+                                    <div class="counter"><%= userData.countFriend()%></div>
                                     <div class="heading" ><a href ='/menu/<%= userData.id%>/friendList'>Friends</a></div>
                                 </li>
                                 <li>
                                     <div class="counter"><%= friendreq%></div>
-                                    <div class="heading" ><a href ='/menu/<%= userData.id%>/friendList'>Friend Requests</a></div>
+                                    <div class="heading" ><a href ='/menu/<%= userData.id%>/friendReq'>Friend Requests</a></div>
                               </li>
   
                             </ul>
