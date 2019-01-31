@@ -95,13 +95,13 @@ router.post('/', upload, function(req, res) {
 //     })
 // })
 
-router.get('/timeline/:page', function(req, res) {
+router.get('/timeline/:page', function(req, res) { // 
   let theUSer = null
   // console.log(req.session, '================')
   let arrayTimeline = []
   let timeline = []
   let friendreq = null
-  Models.User.findByPk(req.session.userLogin.id, { // req.session.userLogin.id
+  Models.User.findByPk(1, { // req.session.userLogin.id
     attributes : ['id','name', 'email', 'username', 'friendsCount'],
     include : [{
       // all : true
@@ -144,7 +144,7 @@ router.get('/timeline/:page', function(req, res) {
        */
       // console.log(allData)
       timeline = allData
-      return Models.FriendRequest.findAll({attributes: [[Models.sequelize.fn('count', 'id'), 'requestCount']], where: {requestTo: req.session.userLogin.id}})
+      return Models.FriendRequest.findAll({attributes: [[Models.sequelize.fn('count', 'id'), 'requestCount']], where: {requestTo: 1 }})
       // res.send(allData)
     })
     .then(request => {
@@ -246,27 +246,46 @@ router.get('/:id/friendList', (req, res) => {
 router.post('/search', (req, res) => {
   let userData = null
   let status = null
+  let searchFriendRequest = null
   Models.User
     .findOne({where: {username: req.body.username}})
     .then(user => {
       // userData: theUser, users: JSON.stringify(users)
-      userData = user
-      return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.id}})
+      if(!user) {
+        res.send(`user not found`)
+      } else {
+        userData = user
+        // return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.id}})
+        return Models.User.findByPk(1, { include :  [ { model : Models.FriendRequest }]})
+      }
     })
     .then((dataFound) => {
-      if (dataFound.response) {
+      // console.log('here')
+      // console.log(dataFound)
+      // res.send(dataFound)
+      dataFound.FriendRequests.forEach( fr => {
+        if(fr.requestTo == userData.id) {
+          if(fr.response === 'true') {
+            status = 'true'
+          } else {
+            status = 'pending'
+          }
+        } 
+      })
 
-        status = dataFound.response
-      }
-      return Models.User.findAll()    
+      return Models.User.findAll()
     })
     .then(allUser => {
       let users = []
       allUser.forEach(user => {
         users.push(user.username)
       })
-      // res.send(timeline)
-      res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status})
+
+      if(userData.id === 1) {
+        res.redirect('/menu/timeline/1')
+      } else {
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status, })
+      }
     })
     .catch(err => {
       res.send(err)
