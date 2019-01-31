@@ -15,7 +15,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       response: {
-        type: Sequelize.ENUM('true', 'false')
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
