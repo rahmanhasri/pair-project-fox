@@ -5,6 +5,12 @@
   <title>Login</title>
 </head>
 <body>
+    <% if (msg) {%>
+    <div class="error-msg">
+        <i class="fa fa-times-circle"></i>
+        <%= msg%>
+    </div>
+    <%}%>
   <div class="container is-fluid">
     
     <form action="" method="POST">

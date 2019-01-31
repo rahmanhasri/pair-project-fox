@@ -4,6 +4,9 @@ const bcryptLogin = require('../helpers/login')
 const middleware = require('../helpers/middleware')
 const autocomplete = require('../helpers/autocomplete')
 
+router.get('/', (req, res) => {
+    res.render('pages/home',{user: req.session.userLogin})
+})
 // router.get('/', function(req, res) {
 //     if (req.session.userLogin) {
 //         Models.User

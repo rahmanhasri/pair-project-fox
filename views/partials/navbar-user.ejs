@@ -1,6 +1,8 @@
 
-<nav class="navbar is-light">
+<nav class="navbar is-light is-fixed-top" >
+
 <div class="navbar-brand">
+
   <a class="navbar-item" href="/">
     <img src="/chanlogo1.png" alt="" width="70" height="28">
   </a>
@@ -20,13 +22,13 @@
       <div class="autocomplete">
       <form autocomplete="off" action="/" method="POST">
         <input class="input is-rounded" id="myInput" type="text" name="username" placeholder="Search Username">
-        <input type='submit'>
       </form>
       </div>
     </div>
   </div>
   
 </nav>
+
 <%- include('../partials/autocomplete', {users: users}) %>
 
 

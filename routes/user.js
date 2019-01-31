@@ -25,7 +25,7 @@ router.get('/login', (req, res) => {
   if(req.session.userLogin) {
     res.redirect('/menu')
   } else {
-    res.render('pages/login') // copy templatenya login
+    res.render('pages/login', {msg: req.params.msg || null}) // copy templatenya login
   }
 })
 
@@ -41,7 +41,7 @@ router.post('/login', (req, res) => {
       if(result) {
         // login berhasil
         req.session['userLogin'] = { username : req.body.username, id : login.id }
-        res.redirect('/menu')
+        res.redirect('/menu/timeline/1')
       } else {
         // error login gagal
         res.redirect('/login')
@@ -51,5 +51,7 @@ router.post('/login', (req, res) => {
       res.send(err) // handle error
     })
 })
+
+
 
 module.exports = router
