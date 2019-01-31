@@ -3,10 +3,10 @@
 
 <div class="navbar-brand">
 
-  <a class="navbar-item" href="/">
+  <a class="navbar-item" href="/menu/timeline/1">
     <img src="/chanlogo1.png" alt="" width="70" height="28">
   </a>
-
+<button> <a href ="/user/logout">Logout</a></button>
   <div class="navbar-burger burger" data-target="navMenu">
     <span></span>
     <span></span>
@@ -20,14 +20,14 @@
   <div class="navbar-end">
     <div class="navbar-item">
       <div class="autocomplete">
-      <form autocomplete="off" action="/" method="POST">
-        <input class="input is-rounded" id="myInput" type="text" name="username" placeholder="Search Username">
-      </form>
+      <form autocomplete="off" action="/menu/search" method="POST">
+        <input class="input is-rounded" id="myInput" type="text" name="username" placeholder="Search Username" >
+        <button style="position: absolute; top: -999px;left: -999px;width: 0px;height: 0px;" type="submit">
       </div>
     </div>
-  </div>
-  
+  </div>  
 </nav>
+
 
 <%- include('../partials/autocomplete', {users: users}) %>
 
