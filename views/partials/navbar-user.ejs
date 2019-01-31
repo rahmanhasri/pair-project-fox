@@ -7,6 +7,12 @@
     <img src="/chanlogo1.png" alt="" width="70" height="28">
   </a>
 <button> <a href ="/user/logout">Logout</a></button>
+                <% if (msg) {%>
+                    <div class="error-msg">
+                        <i class="fa fa-times-circle"></i>
+                        <%= msg%>
+                    </div>
+                <%}%>
   <div class="navbar-burger burger" data-target="navMenu">
     <span></span>
     <span></span>
@@ -23,11 +29,7 @@
       <form autocomplete="off" action="/menu/search" method="POST">
         <input class="input is-rounded" id="myInput" type="text" name="username" placeholder="Search Username" >
         <button style="position: absolute; top: -999px;left: -999px;width: 0px;height: 0px;" type="submit">
-<<<<<<< HEAD
-      <form></form>
-=======
       </form>
->>>>>>> 39575721e92234bb3cf1d3b1a1bc49584864451b
       </div>
     </div>
   </div>  

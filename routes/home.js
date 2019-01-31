@@ -5,7 +5,8 @@ const middleware = require('../helpers/middleware')
 const autocomplete = require('../helpers/autocomplete')
 
 router.get('/', (req, res) => {
-    res.render('pages/home',{user: req.session.userLogin})
+    // res.render('pages/home',{user: req.session.userLogin})
+    res.redirect('/user/login')
 })
 // router.get('/', function(req, res) {
 //     if (req.session.userLogin) {

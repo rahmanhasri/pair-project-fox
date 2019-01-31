@@ -20,7 +20,7 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-  res.render('pages/login', {msg: req.params.msg || null}) // copy templatenya login
+  res.render('pages/login', {msg: req.query.err || null})
 })
 
 router.post('/login', (req, res) => {
@@ -28,8 +28,12 @@ router.post('/login', (req, res) => {
   let login = null
   Models.User.findOne( { where : { username : req.body.username }})
     .then( user => {
-      login = user
-      return bcryptLogin(user.password, req.body.password)
+      if(user) {
+        login = user
+        return bcryptLogin(user.password, req.body.password)
+      } else {
+        res.redirect('/user/login?err=user+or+password+is+wrong')        
+      }
     })
     .then( result => {
       if(result) {
@@ -38,7 +42,7 @@ router.post('/login', (req, res) => {
         res.redirect('/menu/timeline/1')
       } else {
         // error login gagal
-        res.redirect('/user/login')
+        res.redirect('/user/login?err=user+or+password+is+wrong')
       }
     })
     .catch( err => {

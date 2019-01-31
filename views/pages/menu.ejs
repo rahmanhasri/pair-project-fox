@@ -11,12 +11,13 @@
 
 <% include ../partials/navbar-user%>
 
-
 <div class="container db-social">
 <div class="jumbotron jumbotron-fluid"></div>
 <div class="container-fluid">
+        
     <div class="row justify-content-center">
         <div class="col-xl-11">
+
             <div class="widget head-profile has-shadow">
                 <div class="widget-body pb-0">
                     <div class="row d-flex align-items-center">
@@ -106,14 +107,16 @@
               </div>
             </div>
             <div class="timeline-label">
-              <p class="mar-no pad-btm"><a href="" class="btn-link text-semibold"><%= post.User.name%></a> <%= post.content%></p>
+              <p class="mar-no pad-btm"><a href="" class="btn-link text-semibold"><%= post.User.name%></a> </p>
+              <p><%= post.content%></p>
               <% if (post.urlPhoto) {%>
                 <div class="img-holder">
                   <img src="/uploads/<%= post.urlPhoto%>" alt="Image">
                 </div>
               <%}%>
+              
             </div>
-            </div>
+        </div>
             </div>
           <%})%>
     			
