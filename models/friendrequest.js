@@ -1,12 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const friendRequest = sequelize.define('friendRequest', {
+  const FriendRequest = sequelize.define('FriendRequest', {
     requestFrom: DataTypes.INTEGER,
     requestTo: DataTypes.INTEGER,
-    response: DataTypes.ENUM
+    response: {
+      type : DataTypes.ENUM,
+      values : ['true', 'false']
+    }
   }, {});
-  friendRequest.associate = function(models) {
+  FriendRequest.associate = function(models) {
     // associations can be defined here
   };
-  return friendRequest;
+  return FriendRequest;
 };
