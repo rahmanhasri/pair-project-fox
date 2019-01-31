@@ -1,5 +1,6 @@
 'use strict';
 const bcrypting = require('../helpers/bcryprting')
+const Op = require('sequelize').Op
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -83,6 +84,56 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(User, {as: 'b', through: models.Friend, foreignKey: 'friend'})
     // User.hasMany(models.Post, {foreignKey: 'UserId'})
   };
+
+  User.timeline = function(userId, page) {
+    return new Promise ( (resolve, reject) => {
+      let arrayTimeline = []
+      let timeline = []
+      let theUser = null
+      User.findByPk(userId, { // req.session.userLogin.id
+        attributes : ['id','name', 'email', 'username', 'friendsCount'],
+        include : [{
+          model : User,
+          as : 'temanteman',
+          attributes : ['id','username', 'friendsCount']
+        }] 
+      })
+        .then( user => {
+          // arrayTimeline.push({UserId : user.id})
+          arrayTimeline.push(user.id)
+          user.temanteman.forEach( teman => {
+            // arrayTimeline.push({UserId: teman.id})
+            arrayTimeline.push(teman.id)
+          })
+          theUser = user
+          return sequelize.models.Post.findAll({include: [{model: User}], 
+            where : { 
+              UserId : {
+                [Op.or] : arrayTimeline
+              }
+            },
+            order : [[ 'createdAt' , 'DESC']],
+            limit : 5,
+            offset : (page - 1) * 5
+          })
+        })
+        .then( post => {
+          resolve({post : post, theUser: theUser})
+        })
+        .catch( err => {
+          // console.log('here')
+          reject(err)
+        })
+    })
+  }
+
+  User.countFriendRequest = function(array) {
+    return array.length
+  }
+
+  User.prototype.countFriend = function() {
+    return this.temanteman.length
+  }
 
   return User;
 };
