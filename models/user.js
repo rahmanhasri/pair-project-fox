@@ -82,6 +82,7 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(User, {as: 'temanteman', through: models.Friend, foreignKey: 'user'})
     User.hasMany(models.Post)
     User.belongsToMany(User, {as: 'b', through: models.Friend, foreignKey: 'friend'})
+    User.hasMany(models.FriendRequest)
     // User.hasMany(models.Post, {foreignKey: 'UserId'})
     
   };

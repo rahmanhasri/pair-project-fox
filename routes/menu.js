@@ -94,13 +94,13 @@ router.post('/', upload, function(req, res) {
 //     })
 // })
 
-router.get('/timeline/:page', function(req, res) {
+router.get('/timeline/:page', function(req, res) { // 
   let theUSer = null
   // console.log(req.session, '================')
   let arrayTimeline = []
   let timeline = []
   let friendreq = null
-  Models.User.findByPk(req.session.userLogin.id, { // req.session.userLogin.id
+  Models.User.findByPk(1, { // req.session.userLogin.id
     attributes : ['id','name', 'email', 'username', 'friendsCount'],
     include : [{
       // all : true
@@ -143,7 +143,7 @@ router.get('/timeline/:page', function(req, res) {
        */
       // console.log(allData)
       timeline = allData
-      return Models.FriendRequest.findAll({attributes: [[Models.sequelize.fn('count', 'id'), 'requestCount']], where: {requestTo: req.session.userLogin.id}})
+      return Models.FriendRequest.findAll({attributes: [[Models.sequelize.fn('count', 'id'), 'requestCount']], where: {requestTo: 1 }})
       // res.send(allData)
     })
     .then(request => {
@@ -191,12 +191,42 @@ router.get('/:username', (req, res) => {
       where : { username : req.params.username }, include : [ Models.Post ]
     })
     .then( user => {
-      userData = user
+      if(!user) {
+        res.redirect('/menu/timeline/1')
+      } else {
+
+        return Models.User.findByPk(req.session.userLogin.id, { include :  [ { model : Models.FriendRequest }]})
+      }
+      // res.send('butuh status')
+      // res.render('pages/profile', {userData: userData, users: allUser})
+    })
+    .then((dataFound) => {
+      // console.log('here')
+      // console.log(dataFound)
+      // res.send(dataFound)
+      dataFound.FriendRequests.forEach( fr => {
+        if(fr.requestTo == userData.id) {
+          if(fr.response === 'true') {
+            status = 'true'
+          } else {
+            status = 'pending'
+          }
+        } 
+      })
+
       return Models.User.findAll()
     })
     .then(allUser => {
-      res.send('butuh status')
-      // res.render('pages/profile', {userData: userData, users: allUser})
+      let users = []
+      allUser.forEach(user => {
+        users.push(user.username)
+      })
+
+      if(userData.id === req.session.userLogin.id) {
+        res.redirect('/menu/timeline/1')
+      } else {
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status })
+      }
     })
     .catch( err => {
       res.send(err)
@@ -234,42 +264,61 @@ router.get('/:id/friendList', (req, res) => {
     })
 })
 
-router.get('/:id/friendReq', (req, res) => {
-  Models.FriendRequest
-    .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
-    .then(request => {
-      // res.send(request)
-      res.render('pages/friend-request', {request: request})
-    })
-    .catch(err => {
-      res.send(err)
-    })
-})
+// router.get('/:id/friendReq', (req, res) => {
+//   Models.FriendRequest
+//     .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
+//     .then(request => {
+//       // res.send(request)
+//       res.render('pages/friend-request', {request: request})
+//     })
+//     .catch(err => {
+//       res.send(err)
+//     })
+// })
 
 router.post('/search', (req, res) => {
   let userData = null
   let status = null
+  let searchFriendRequest = null
   Models.User
     .findOne({where: {username: req.body.username}})
     .then(user => {
       // userData: theUser, users: JSON.stringify(users)
-      userData = user
-      return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.dataValues.id}})
-    })
-    .then((dataFound) => {      
-      if (dataFound && dataFound.response) {
-
-        status = dataFound.response
+      if(!user) {
+        res.send(`user not found`)
+      } else {
+        userData = user
+        // return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.id}})
+        return Models.User.findByPk(req.session.userLogin.id, { include :  [ { model : Models.FriendRequest }]})
       }
-      return Models.User.findAll()    
+    })
+    .then((dataFound) => {
+      // console.log('here')
+      // console.log(dataFound)
+      // res.send(dataFound)
+      dataFound.FriendRequests.forEach( fr => {
+        if(fr.requestTo == userData.id) {
+          if(fr.response === 'true') {
+            status = 'true'
+          } else {
+            status = 'pending'
+          }
+        } 
+      })
+
+      return Models.User.findAll()
     })
     .then(allUser => {
       let users = []
       allUser.forEach(user => {
         users.push(user.username)
       })
-      res.send(timeline)
-      // res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status})
+
+      if(userData.id === req.session.userLogin.id) {
+        res.redirect('/menu/timeline/1')
+      } else {
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status })
+      }
     })
     .catch(err => {
       console.log(err)

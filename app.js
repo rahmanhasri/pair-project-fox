@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const port = 3001
 const HomeRoute = require('./routes/home')
 const UserRoute = require('./routes/user')
 const MenuRoute = require('./routes/menu')
