@@ -243,6 +243,18 @@ router.get('/:id/friendList', (req, res) => {
     })
 })
 
+router.get('/:id/friendReq', (req, res) => {
+  Models.FriendRequest
+    .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
+    .then(request => {
+      // res.send(request)
+      res.render('pages/friend-request', {request: request})
+    })
+    .catch(err => {
+      res.send(err)
+    })
+})
+
 router.post('/search', (req, res) => {
   let userData = null
   let status = null
