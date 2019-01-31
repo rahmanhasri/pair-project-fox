@@ -78,9 +78,32 @@ module.exports = (sequelize, DataTypes) => {
   });
   User.associate = function(models) {
     // associations can be defined here
-    User.belongsToMany(User, {as: 'user', through: models.Friend, foreignKey: 'user'})
-    User.belongsToMany(User, {as: 'friend', through: models.Friend, foreignKey: 'friend'})
-    User.hasMany(models.Post, {foreignKey: 'UserId'})
+    User.belongsToMany(User, {as: 'temanteman', through: models.Friend, foreignKey: 'user'})
+    User.hasMany(models.Post)
+    User.belongsToMany(User, {as: 'b', through: models.Friend, foreignKey: 'friend'})
+    // User.hasMany(models.Post, {foreignKey: 'UserId'})
   };
+
+  User.prototype.timeline = function() {
+    return new Promise( (resolve, reject) => {
+      let array = []
+      
+      this.Posts.forEach( post => {
+        array.push(post)
+      })
+
+      this.temanteman.forEach( teman => {
+        teman.Posts.forEach( postTeman => {
+
+          array.push(postTeman)
+        })
+      })
+
+      array.sort( (a, b) => {
+        return a.createdAt < b.createdAt
+      })
+      resolve(array)
+    })
+  }
   return User;
 };

@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const Model = require('../models')
-const Post = Model.Post
+const Models = require('../models')
+
 var multer  = require('multer')
 
 var storage = multer.diskStorage({
@@ -13,19 +13,24 @@ var storage = multer.diskStorage({
   }
 })
 
-var upload = multer({ storage: storage })
+var upload = multer({ storage: storage }).single('photo')
 
 router.get('/', function(req, res) {
   // disini ada middleware cek login
-  res.render('pages/home')
+  res.render('pages/posting')
 })
 
-router.post('/', upload.single('photo'), function(req, res) {
+router.post('/', function(req, res) {
   // console.log('masuk')
-  res.send(req.file)
-  if(req.file) {
-    res.send(req.file)
-  }
+  // res.send(req.file)
+  // if(req.file) {
+  //   res.send(req.file)
+  // } else {
+  //   res.send(req.body)
+  // }
+
+  // abis tambah post column urlPhoto
+  Models.Post.create()
 })
 
 
