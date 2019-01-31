@@ -84,26 +84,5 @@ module.exports = (sequelize, DataTypes) => {
     // User.hasMany(models.Post, {foreignKey: 'UserId'})
   };
 
-  User.prototype.timeline = function() {
-    return new Promise( (resolve, reject) => {
-      let array = []
-      
-      this.Posts.forEach( post => {
-        array.push(post)
-      })
-
-      this.temanteman.forEach( teman => {
-        teman.Posts.forEach( postTeman => {
-
-          array.push(postTeman)
-        })
-      })
-
-      array.sort( (a, b) => {
-        return a.createdAt < b.createdAt
-      })
-      resolve(array)
-    })
-  }
   return User;
 };

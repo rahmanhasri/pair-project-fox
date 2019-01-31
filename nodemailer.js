@@ -23,7 +23,7 @@ function mailNotifications(targetEmail, mentioner, urlLink) {
   smtpTransport.sendMail(mailOptions, function(error, response){
       if(error){
           console.log(error);
-      }else{
+      } else{
           console.log(response)
           console.log("Message sent... ✔");
       }
