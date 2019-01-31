@@ -20,12 +20,7 @@ router.post('/signup', (req, res) => {
 })
 
 router.get('/login', (req, res) => {
-
-  if(req.session.userLogin) {
-    res.redirect('/menu')
-  } else {
-    res.render('pages/login', {msg: req.params.msg || null}) // copy templatenya login
-  }
+  res.render('pages/login', {msg: req.params.msg || null}) // copy templatenya login
 })
 
 router.post('/login', (req, res) => {
