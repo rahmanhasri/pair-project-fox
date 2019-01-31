@@ -12,7 +12,7 @@ var storage = multer.diskStorage({
     cb(null, './public/uploads')
   },
   filename: function (req, file, cb) {
-    console.log(file)
+    // console.log(file)
     cb(null, Date.now() + '-' + file.fieldname + '.' + file.mimetype.split('/')[1] )
   }
 })
@@ -49,11 +49,10 @@ router.post('/', upload, function(req, res) {
   let obj = {
     content: req.body.text,
     likeCount: 0,
-    UserId: 8, // ambil dari req.session
+    UserId: req.session.userLogin.id, // ambil dari req.session
     urlPhoto : req.file ? req.file.filename : null
   }
   // res.send(req.file)
-  // console.log(req.file)
 
   // res.send(obj)
   // res.send(req.body)
@@ -185,27 +184,19 @@ updatedAt: "2019-01-30T05:02:18.475Z"
 }
 */
 
-router.get('/profile', function(req, res) {
-
-  Models.User.findByPk(1, { // req.session.id
-    include : [ Models.Post ]
-  })
-    .then( user => {
-      res.send(user)
+router.get('/:username', (req, res) => {
+  let userData = null
+  Models.User
+    .findOne({
+      where : { username : req.params.username }, include : [ Models.Post ]
     })
-    .catch( err => {
-      res.send(err)
-    })
-})
-
-
-router.get('/profile/:username', function(req, res) {
-
-  Models.User.findOne({
-    where : { username : req.params.username }, include : [ Models.Post ]
-  })
     .then( user => {
-      res.send(user)
+      userData = user
+      return Models.User.findAll()
+    })
+    .then(allUser => {
+      res.send('butuh status')
+      // res.render('pages/profile', {userData: userData, users: allUser})
     })
     .catch( err => {
       res.send(err)
@@ -263,10 +254,10 @@ router.post('/search', (req, res) => {
     .then(user => {
       // userData: theUser, users: JSON.stringify(users)
       userData = user
-      return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.id}})
+      return Models.FriendRequest.findOne({where: {requestFrom: req.session.userLogin.id, requestTo: user.dataValues.id}})
     })
-    .then((dataFound) => {
-      if (dataFound.response) {
+    .then((dataFound) => {      
+      if (dataFound && dataFound.response) {
 
         status = dataFound.response
       }
@@ -277,10 +268,11 @@ router.post('/search', (req, res) => {
       allUser.forEach(user => {
         users.push(user.username)
       })
-      // res.send(timeline)
-      res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status})
+      res.send(timeline)
+      // res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status})
     })
     .catch(err => {
+      console.log(err)
       res.send(err)
     })
 })
