@@ -28,7 +28,7 @@ var upload = multer({ storage: storage }).single('photo')
 // })
 // M I D D L E W A R E   M E N U 
 
-router.get('/', (req,res) => {
+router.get('/', middleware,(req,res) => {
   Models.User
       .findAll()
       .then((allUser) => {
@@ -94,13 +94,13 @@ router.post('/', upload, function(req, res) {
 //     })
 // })
 
-router.get('/timeline/:page', function(req, res) { // 
+router.get('/timeline/:page', middleware, function(req, res) { // 
   let theUSer = null
   // console.log(req.session, '================')
   let arrayTimeline = []
   let timeline = []
   let friendreq = null
-  Models.User.findByPk(1, { // req.session.userLogin.id
+  Models.User.findByPk(req.session.userLogin.id, { // req.session.userLogin.id
     attributes : ['id','name', 'email', 'username', 'friendsCount'],
     include : [{
       // all : true
@@ -143,11 +143,12 @@ router.get('/timeline/:page', function(req, res) { //
        */
       // console.log(allData)
       timeline = allData
-      return Models.FriendRequest.findAll({attributes: [[Models.sequelize.fn('count', 'id'), 'requestCount']], where: {requestTo: 1 }})
+      return Models.FriendRequest.findAll({where: {requestTo: req.session.userLogin.id, response: 'pending'}})
       // res.send(allData)
     })
     .then(request => {
-      friendreq = request[0].dataValues.requestCount
+      // res.send(request)
+      friendreq = request.length
       // console.log('===', request[0].dataValues.requestCount)
       return Models.User.findAll()
     })
@@ -157,7 +158,7 @@ router.get('/timeline/:page', function(req, res) { //
             users.push(user.username)
           })
           // res.send(timeline)
-      res.render('pages/menu', {userData: theUser, users: JSON.stringify(users), timeline: timeline, friendreq : friendreq})
+      res.render('pages/menu', {userData: theUser, users: JSON.stringify(users), timeline: timeline, friendreq : friendreq, page: req.params.page})
     })
     .catch( err => {
       res.send(err.message)
@@ -184,8 +185,9 @@ updatedAt: "2019-01-30T05:02:18.475Z"
 }
 */
 
-router.get('/:username', (req, res) => {
+router.get('/:username', middleware, (req, res) => {
   let userData = null
+  let status = null
   Models.User
     .findOne({
       where : { username : req.params.username }, include : [ Models.Post ]
@@ -194,16 +196,14 @@ router.get('/:username', (req, res) => {
       if(!user) {
         res.redirect('/menu/timeline/1')
       } else {
-
+        userData = user
         return Models.User.findByPk(req.session.userLogin.id, { include :  [ { model : Models.FriendRequest }]})
       }
       // res.send('butuh status')
       // res.render('pages/profile', {userData: userData, users: allUser})
     })
     .then((dataFound) => {
-      // console.log('here')
-      // console.log(dataFound)
-      // res.send(dataFound)
+      // res.send('====', dataFound)
       dataFound.FriendRequests.forEach( fr => {
         if(fr.requestTo == userData.id) {
           if(fr.response === 'true') {
@@ -213,7 +213,6 @@ router.get('/:username', (req, res) => {
           }
         } 
       })
-
       return Models.User.findAll()
     })
     .then(allUser => {
@@ -221,7 +220,6 @@ router.get('/:username', (req, res) => {
       allUser.forEach(user => {
         users.push(user.username)
       })
-
       if(userData.id === req.session.userLogin.id) {
         res.redirect('/menu/timeline/1')
       } else {
@@ -233,7 +231,7 @@ router.get('/:username', (req, res) => {
     })
 })
 
-router.get('/:id/friendList', (req, res) => {
+router.get('/:id/friendList', middleware,(req, res) => {
   Models.Friend
     .findAll({where: {user: req.params.id}})
     .then(friend => {
@@ -264,19 +262,55 @@ router.get('/:id/friendList', (req, res) => {
     })
 })
 
-// router.get('/:id/friendReq', (req, res) => {
-//   Models.FriendRequest
-//     .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
-//     .then(request => {
-//       // res.send(request)
-//       res.render('pages/friend-request', {request: request})
-//     })
-//     .catch(err => {
-//       res.send(err)
-//     })
-// })
+router.get('/:id/friendReq', middleware, (req, res) => {
+  Models.FriendRequest
+    .findAll({where: {requestTo: req.params.id}, include: [{model: Models.User}]})
+    .then(request => {
+      // res.send(request)
+      res.render('pages/friend-request', {request: request})
+    })
+    .catch(err => {
+      res.send(err)
+    })
+})
 
-router.post('/search', (req, res) => {
+router.get('/friendrequest/accept/:id', middleware, function(req, res) {
+  // res.send(req.query)
+  Models.FriendRequest.update({ response : 'true' }, { where : { requestTo: req.session.userLogin.id, UserId: req.params.id} })
+    .then( () => {
+      // res.send('accept')
+      return Models.Friend.create({
+        user: req.session.userLogin.id,
+        friend: req.params.id
+      })
+    })
+    .then(() => {
+      return Models.Friend.create({
+        user: req.params.id,
+        friend: req.session.userLogin.id
+      })
+    })
+    .then(() => {
+      res.redirect(`/menu/${req.session.userLogin.id}/friendReq`)
+    })
+    .catch( err => {
+      console.log(err)
+      res.send(err)
+    })
+})
+
+router.get('/friendrequest/decline/:id', middleware, function(req, res) {
+
+  Models.FriendRequest.destroy({ where : { id: req.params.id } })
+    .then( () => {
+      res.redirect(`/menu/${req.session.userLogin.id}/friendReq`)
+    })
+    .catch( err => {
+      res.send(err)
+    })
+})
+
+router.post('/search', middleware, (req, res) => {
   let userData = null
   let status = null
   let searchFriendRequest = null
@@ -321,20 +355,22 @@ router.post('/search', (req, res) => {
       }
     })
     .catch(err => {
-      console.log(err)
       res.send(err)
     })
 })
 
-router.get('/addFriend/:friendId', (req, res) => {
+router.get('/addFriend/:friendId', middleware, (req, res) => {
   Models.FriendRequest
     .create({
-      requestFrom: req.session.userLogin.id,
+      UserId: req.session.userLogin.id,
       requestTo: Number(req.params.friendId),
       response: 'pending'
     })
     .then(() => {
-      res.redirect('/home/search')
+      return Models.User.findOne({where:{id: req.params.friendId}})
+    })
+    .then((friend) => {
+      res.redirect(`/menu/${friend.username}`)
     })
     .catch(err => {
       res.send(err)

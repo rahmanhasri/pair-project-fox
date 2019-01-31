@@ -33,13 +33,13 @@ module.exports = (sequelize, DataTypes) => {
           return sequelize.models.User.findOne( { where : { username : people }})
             .then( target => {
               mentioned = target
-              console.log('masuk','=====================')
+              // console.log('masuk','=====================')
               if(target) {
                 return sequelize.models.MentionHistory.create({userSource : post.UserId, postId : post.id, userTarget : target.id})
               }
             })
             .then( () => { // masih dummy
-              return mailNotifications(mentioned.email, 'Your friend', 'http://google.com')
+              return mailNotifications('celyn.vy@gmail.com', mentioned.username, 'http://google.com')
             })
         }
       }
