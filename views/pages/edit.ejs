@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../partials/head %>
+  <title>Edit Post</title>
+</head>
+<body>
+  <% include ../partials/navbar-user %>
+  <div class="parent" style="position:absolute; top: 10%; width: 100%">
+
+<div class="flex-row">
+    <div class="column is-one-quarter">
+        <form action="/menu/post/edit/<%= post.id%>" method="POST">
+        <textarea class="textarea is-primary" name="content" ><%= post.content %></textarea>
+        <button type="submit" class="button is-primary">Submit</button>
+      </form>
+  </div>
+  <!-- </div> -->
+</div>
+
+    
+
+    
+</body>
+</html>

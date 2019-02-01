@@ -121,8 +121,8 @@ router.get('/timeline/:page', middleware, function(req, res) { //
           users.push(user.username)
         })
           // res.send(timeline)
-          console.log(req.query)
-      res.render('pages/menu', {userData: theUser, users: JSON.stringify(users), timeline: timeline, friendreq : friendreq, page: req.params.page, msg: req.query.err})
+          // console.log(req.query)
+      res.render('pages/menu', {userData: theUser, users: JSON.stringify(users), timeline: timeline, friendreq : friendreq, page: req.params.page, msg: req.query.err, userLogin: req.session.userLogin.id})
     })
     .catch( err => {
       res.send(err)
@@ -266,7 +266,7 @@ router.get('/:username', (req, res) => {
         res.redirect('/menu/timeline/1')
       } else {
         console.log(users)
-        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status })
+        res.render('pages/profile', {userData: userData, users: JSON.stringify(users), status: status , msg : null})
       }
     })
     .catch( err => {
@@ -297,7 +297,7 @@ router.get('/:id/friendList', middleware,(req, res) => {
     })
     .then(allFriends => {
       // res.send(allFriends)
-      res.render('pages/friend-list', {allFriends: allFriends})
+      res.render('pages/friend-list', {allFriends: allFriends, msg : null})
 
     })
     .catch(err => {
@@ -425,6 +425,55 @@ router.get('/addFriend/:friendId', middleware, (req, res) => {
       res.send(err)
     })
 })
+
+router.get('/post/delete/:postId', middleware, (req, res) => {
+
+  Models.Post.destroy( { where : { id : req.params.postId}})
+    .then( () => {
+      res.redirect('/menu/timeline/1?err=delete+post+berhasil')
+    })
+    .catch( err => {
+      res.send(err)
+    })
+})
+
+router.get('/post/edit/:postId', middleware, (req, res) => {
+
+  let post = null
+  Models.Post.findByPk(req.params.postId)
+    .then( data => {
+      if(!data) {
+        res.redirect('/menu/timeline/1')
+      } else {
+        post = data
+        return Models.User.findAll()
+      }
+    })
+    .then(allUser => {
+      let users = []
+      allUser.forEach(user => {
+        users.push(user.username)
+      })
+
+      res.render('pages/edit', {users : JSON.stringify(users), msg : null, post})
+    })
+    .catch( err => {
+      res.send(err)
+    })
+})
+
+router.post('/post/edit/:postId', middleware, (req, res) => {
+
+  // res.send(req.body)
+  Models.Post.update(req.body, { where : { id : req.params.postId}})
+    .then( () => {
+      res.redirect('/menu/timeline/1')
+    })
+    .catch( (err) => {
+      res.send(err)
+    })
+})
+// router.get('/post/update/')
 
 
 /*

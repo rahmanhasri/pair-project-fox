@@ -107,17 +107,19 @@
               </div>
             </div>
             <div class="timeline-label">
-              <p class="mar-no pad-btm"><a href="" class="btn-link text-semibold"><%= post.User.name%></a> </p>
+              <p class="mar-no pad-btm"><a href="/menu/<%= post.User.username %>" class="btn-link text-semibold"><%= post.User.name%></a> </p>
               <p><%= post.content%></p>
               <% if (post.urlPhoto) {%>
                 <div class="img-holder">
                   <img src="/uploads/<%= post.urlPhoto%>" alt="Image">
                 </div>
               <%}%>
-              
             </div>
         </div>
-            </div>
+    </div>
+    <% if (userLogin == post.User.id) {%>
+    <p><a href="/menu/post/delete/<%= post.id %>">delete</a>  |  <a href="/menu/post/edit/<%= post.id %>">edit</a></p>
+    <% } %>
           <%})%>
     			
     		<!--===================================================-->
